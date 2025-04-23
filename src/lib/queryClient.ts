@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from '@tanstack/react-query';
+import { useAuthStore } from './auth-store';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -55,3 +56,29 @@ export const queryClient = new QueryClient({
     },
   },
 });
+export async function protectedAPIRequest(
+  method: string,
+  url: string,
+  data?: unknown
+): Promise<Response> {
+  const { token } = useAuthStore.getState();
+
+  const isFormData = data instanceof FormData;
+
+  const res = await fetch(url, {
+    method,
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+    },
+    body: data
+      ? isFormData
+        ? (data as FormData)
+        : JSON.stringify(data)
+      : undefined,
+    credentials: 'include',
+  });
+
+  await throwIfResNotOk(res);
+  return res;
+}

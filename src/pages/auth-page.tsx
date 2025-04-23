@@ -107,9 +107,9 @@ export default function AuthPage() {
         <div className="w-full max-w-md mx-auto lg:w-96">
           <div className="flex justify-center mb-8">
             <img
-              src={'/logo blanc.jpg'}
+              src={'/logo blue.png'}
               alt="MincaAI Logo"
-              className="h-24 w-auto"
+              className="h-20 w-auto"
             />
           </div>
 

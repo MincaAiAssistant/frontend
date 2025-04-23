@@ -2,9 +2,10 @@ import React from 'react';
 import { FileText, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/utils';
+import { KnowledgeBase } from '@/lib/types';
 
 interface RecentUploadsProps {
-  data: { files: { filename: string; lastModified: Date }[] } | undefined;
+  data: KnowledgeBase[] | undefined;
   isLoading: boolean;
   removeUploadedFile: (filename: string) => void;
   deletingFile: string | null;
@@ -27,7 +28,7 @@ export default function RecentUploads({
             <div className="flex items-center justify-center h-48">
               <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
             </div>
-          ) : data && data.files.length === 0 ? (
+          ) : data && data.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-gray-500 space-y-4">
               <FileText className="h-8 w-8 text-gray-400" />
               <p className="text-sm text-center max-w-sm">
@@ -36,7 +37,7 @@ export default function RecentUploads({
               </p>
             </div>
           ) : (
-            data?.files.map((file, index) => (
+            data?.map((file, index) => (
               <div key={index} className="p-4 hover:bg-gray-50">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">

@@ -1,5 +1,5 @@
 import { protectedAPIRequest } from '@/lib/queryClient';
-import { File } from '@/lib/types';
+import { KnowledgeBase } from '@/lib/types';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -12,7 +12,7 @@ const uploadFiles = async (formData: FormData) => {
   return response;
 };
 
-const getFiles = async (): Promise<{ files: File[] }> => {
+const getFiles = async (): Promise<{ files: KnowledgeBase[] }> => {
   const response = await protectedAPIRequest(
     'GET',
     `${BASE_URL}/knowledge-base/files`

@@ -155,7 +155,7 @@ export default function KnowledgeBasePage() {
           uploading={uploadFilesMutation.isPending}
         />
         <RecentUploads
-          data={data}
+          data={data?.files}
           isLoading={isLoading}
           removeUploadedFile={removeUploadedFile}
           isDeleting={deleteFileMutation.isPending}

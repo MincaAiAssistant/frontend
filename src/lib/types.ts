@@ -52,7 +52,7 @@ export interface UploadedFile {
   status: FileStatus;
 }
 
-export interface File {
+export interface KnowledgeBase {
   filename: string;
   size: number;
   lastModified: Date;

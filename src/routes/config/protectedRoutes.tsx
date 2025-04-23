@@ -9,7 +9,15 @@ export const protectedRoutes: Route[] = [
   {
     path: '/',
     component: <ChatPage />,
-    description: 'Chat with insurance assistant',
+    description:
+      'Expert in insurance policies, coverage options, and claims processing',
+    icon: '🧑‍💻',
+  },
+  {
+    path: '/chat/:id',
+    component: <ChatPage />,
+    description:
+      'Expert in insurance policies, coverage options, and claims processing',
     icon: '🧑‍💻',
   },
   {

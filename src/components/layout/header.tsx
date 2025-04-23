@@ -21,8 +21,18 @@ const Header = ({
         <span className="text-xl">{icon}</span>
       </div>
       <div>
-        <h2 className="font-medium text-gray-900">{title}</h2>
-        {description && <p className="text-sm text-gray-500">{description}</p>}
+        <h2 className="font-medium text-gray-900">
+          {title?.startsWith('"') && title.endsWith('"')
+            ? title.slice(1, -1)
+            : title}
+        </h2>
+        {description && (
+          <p className="text-sm text-gray-500">
+            {description?.startsWith('"') && description.endsWith('"')
+              ? description.slice(1, -1)
+              : description}
+          </p>
+        )}
       </div>
     </div>
   );

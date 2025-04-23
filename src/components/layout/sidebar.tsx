@@ -5,29 +5,39 @@ import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { MincaLogo } from '@/lib/minca-logo';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Chat } from '@/lib/types';
+import { useState } from 'react';
 
-export default function Sidebar() {
+interface SideBarProps {
+  setCurrentChat: React.Dispatch<React.SetStateAction<Chat | undefined>>;
+  recentChats: Chat[] | undefined;
+  currentChat: Chat | undefined;
+}
+
+export default function Sidebar({
+  recentChats,
+  currentChat,
+  setCurrentChat,
+}: SideBarProps) {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [visibleChats, setVisibleChats] = useState(5);
+
   const handleLogout = () => {
     logout();
     navigate('/auth');
   };
 
-  // Define the Insurance Assistant
   const assistant = {
     id: 'insurance-expert',
     icon: '🧑‍💻',
-    name: 'Insurance Assistant',
+    name: 'Insurance Expert Assistant',
   };
 
-  // Dummy recent chats (would be fetched from server in a real app)
-  const recentChats = [
-    { id: '1', title: 'Insurance policy renewal' },
-    { id: '2', title: 'Coverage options for small business' },
-    { id: '3', title: 'Claims process question' },
-  ];
+  const displayedChats = recentChats?.slice(0, visibleChats);
+  const canLoadMore = recentChats && visibleChats < recentChats.length;
 
   return (
     <aside className="bg-gradient-to-b from-cyan-600 to-blue-700 text-white w-80 flex-shrink-0 flex flex-col h-screen">
@@ -43,11 +53,9 @@ export default function Sidebar() {
 
           <nav className="space-y-1">
             <button
-              onClick={() => {
-                navigate('/');
-              }}
+              onClick={() => navigate('/')}
               className={cn(
-                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left',
+                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left cursor-pointer',
                 location.pathname === '/' ||
                   (location.pathname === '/' &&
                     !location.pathname.includes('integration') &&
@@ -61,31 +69,55 @@ export default function Sidebar() {
             </button>
           </nav>
 
-          <Button className="mt-3 w-full bg-cyan-400 hover:bg-cyan-500 text-black">
+          <Button
+            className="mt-3 w-full bg-cyan-400 hover:bg-cyan-500 text-black"
+            onClick={() => navigate('/')}
+          >
             <Plus className="h-4 w-4 mr-2" />
             New Chat
           </Button>
         </div>
 
-        <div className="mb-4">
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-            RECENT CHATS
-          </h3>
+        {recentChats && (
+          <div className="mb-4">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+              RECENT CHATS
+            </h3>
 
-          <nav className="space-y-0">
-            {recentChats.map((chat) => (
-              <button
-                key={chat.id}
-                className="flex items-center px-4 py-2 text-sm rounded-lg text-white/80 hover:bg-white/10 hover:text-white w-full text-left"
-                onClick={() => {
-                  navigate('/');
-                }}
-              >
-                <span className="truncate">{chat.title}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
+            <nav className="space-y-0">
+              {displayedChats?.map((chat) => (
+                <button
+                  key={chat.chatid}
+                  className={`flex items-center cursor-pointer px-4 py-2 text-sm rounded-lg w-full text-left ${
+                    chat.chatid === currentChat?.chatid
+                      ? 'bg-white/10 text-white font-medium'
+                      : 'text-white/80 hover:bg-white/10 hover:text-white'
+                  } `}
+                  onClick={() => {
+                    setCurrentChat(chat);
+                    navigate(`/chat/${chat.chatid}`);
+                  }}
+                >
+                  <span className="mr-3">{assistant.icon}</span>
+                  <span className="truncate">
+                    {chat.title.replace(/^"(.*)"$/, '$1')}
+                  </span>
+                </button>
+              ))}
+            </nav>
+
+            {canLoadMore && (
+              <div className="text-center">
+                <button
+                  onClick={() => setVisibleChats((prev) => prev + 5)}
+                  className="mt-2 text-xs text-cyan-300 hover:underline cursor-pointer"
+                >
+                  Load more
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         <div>
           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
@@ -95,7 +127,7 @@ export default function Sidebar() {
           <nav className="space-y-0">
             <button
               className={cn(
-                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left',
+                'flex items-center px-4 py-2 text-sm rounded-lg cursor-pointer w-full text-left',
                 location.pathname === '/knowledge-base'
                   ? 'bg-white/10 text-white font-medium'
                   : 'text-white/80 hover:bg-white/10 hover:text-white'
@@ -105,9 +137,10 @@ export default function Sidebar() {
               <span className="mr-3">📚</span>
               <span>Knowledge Base</span>
             </button>
+
             <button
               className={cn(
-                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left',
+                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left cursor-pointer',
                 location.pathname === '/crm-integration'
                   ? 'bg-white/10 text-white font-medium'
                   : 'text-white/80 hover:bg-white/10 hover:text-white'
@@ -117,9 +150,10 @@ export default function Sidebar() {
               <span className="mr-3">🔗</span>
               <span>CRM Integration</span>
             </button>
+
             <button
               className={cn(
-                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left',
+                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left cursor-pointer',
                 location.pathname === '/google-integration'
                   ? 'bg-white/10 text-white font-medium'
                   : 'text-white/80 hover:bg-white/10 hover:text-white'
@@ -129,9 +163,10 @@ export default function Sidebar() {
               <span className="mr-3">📧</span>
               <span>Google Integration</span>
             </button>
+
             <button
               className={cn(
-                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left',
+                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left cursor-pointer',
                 location.pathname === '/general-settings'
                   ? 'bg-white/10 text-white font-medium'
                   : 'text-white/80 hover:bg-white/10 hover:text-white'

@@ -1,6 +1,56 @@
-# Minca AI Assistant
+# 🌐 Minca AI Assistant
 
-## How to Run the Project
+## 📦 Overview
+
+This repository contains the frontend UI for **Minca AI Assistant**, built using **[React / Vite / Typescript]**.  
+The app is now finalized and deployed.
+
+---
+
+## 🚀 Live Deployment
+
+- **URL:** [https://mincaaiassistant.netlify.app/](https://mincaaiassistant.netlify.app/)
+- **Deployed On:** Netlify
+- **Branch:** `main`
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: React 19, Vite, TypeScript
+- **Styling**: Tailwind CSS v4, ShadCN UI
+- **Routing**: React Router v7
+- **State Management**: Zustand, React Hook Form, Zod
+- **Data Fetching**: React Query v5
+
+---
+
+## 🧭 Folder Structure
+
+├── public/ # Static assets (logos, redirects)
+│ ├── logo*.png # Logo images
+│ └── \_redirects # Redirect rules (e.g., Netlify)
+├── src/
+│ ├── components/ # Reusable UI components
+│ ├── lib/ # Utilities, helpers
+│ │ ├── auth-store.ts # Zustand store for auth state
+│ │ ├── queryClient.ts # React Query client config
+│ │ ├── types.ts # Global types/interfaces
+│ │ └── utils.ts # Helper functions
+│ ├── pages/ # Page-level components
+│ ├── routes/ # Route definitions
+│ ├── services/ # API/service logic
+│ ├── App.tsx # Root app component
+│ ├── main.tsx # Entry point
+│ └── index.css # Global styles
+├── .env # Environment variables
+├── vite.config.ts # Vite config
+├── tsconfig*.json # TypeScript configs
+└── README.md # Project documentation
+
+---
+
+## ⚙️ Setup Instructions
 
 1. Clone the repository:
 
@@ -25,3 +75,11 @@
    ```
    http://localhost:5173/
    ```
+
+---
+
+## 🔐 Environment Variables
+
+Create a .env file with the following variables:
+
+- VITE_BASE_URL=https://backend-r8pk.onrender.com

@@ -27,6 +27,7 @@ The app is now finalized and deployed.
 
 ## 🧭 Folder Structure
 
+```shell
 ├── public/ # Static assets (logos, redirects)
 │ ├── logo*.png # Logo images
 │ └── \_redirects # Redirect rules (e.g., Netlify)
@@ -47,6 +48,7 @@ The app is now finalized and deployed.
 ├── vite.config.ts # Vite config
 ├── tsconfig*.json # TypeScript configs
 └── README.md # Project documentation
+```
 
 ---
 

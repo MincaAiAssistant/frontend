@@ -78,7 +78,7 @@ export default function Sidebar({
           </Button>
         </div>
 
-        {recentChats && (
+        {recentChats && recentChats.length !== 0 && (
           <div className="mb-4">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
               RECENT CHATS

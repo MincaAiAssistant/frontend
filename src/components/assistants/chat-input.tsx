@@ -129,6 +129,7 @@ export function ChatInput({
             onChange={handleFileChange}
             className="hidden"
             multiple
+            accept=".pdf,.doc,.docx"
           />
 
           <div className="absolute right-4 bottom-3 flex items-center gap-2 z-10 bg-white rounded-full shadow-sm">

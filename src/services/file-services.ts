@@ -1,18 +1,18 @@
 import { protectedAPIRequest } from '@/lib/queryClient';
-import { KnowledgeBase } from '@/lib/types';
+import { Collection } from '@/lib/types';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const uploadFiles = async (formData: FormData) => {
+const uploadFiles = async (formData: FormData, collectionName: string) => {
   const response = await protectedAPIRequest(
     'POST',
-    `${BASE_URL}/knowledge-base/files`,
+    `${BASE_URL}/knowledge-base/collection/${collectionName}/files`,
     formData
   );
   return response;
 };
 
-const getFiles = async (): Promise<{ files: KnowledgeBase[] }> => {
+const getFiles = async (): Promise<Collection[]> => {
   const response = await protectedAPIRequest(
     'GET',
     `${BASE_URL}/knowledge-base/files`
@@ -20,10 +20,10 @@ const getFiles = async (): Promise<{ files: KnowledgeBase[] }> => {
   return response.json();
 };
 
-const deleteFile = async (filename: string) => {
+const deleteFile = async (filename: string, collectionName: string) => {
   const response = await protectedAPIRequest(
     'DELETE',
-    `${BASE_URL}/knowledge-base/files/${filename}`
+    `${BASE_URL}/knowledge-base/collection/${collectionName}/files/${filename}`
   );
   return response;
 };

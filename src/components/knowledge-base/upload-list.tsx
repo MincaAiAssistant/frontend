@@ -10,6 +10,7 @@ interface UploadListProps {
   removeFile: (id: string) => void;
   startUpload: (e: React.MouseEvent<HTMLButtonElement>) => void;
   uploading: boolean;
+  collectionName: string;
 }
 
 const getStatusIcon = (status: UploadedFile['status']) => {
@@ -37,6 +38,7 @@ export default function UploadList({
   removeFile,
   startUpload,
   uploading,
+  collectionName,
 }: UploadListProps) {
   const disabledButton =
     uploading ||
@@ -49,7 +51,10 @@ export default function UploadList({
 
   return (
     <div className="bg-white shadow-sm rounded-lg p-6 mb-8">
-      <h3 className="text-lg font-medium mb-4">Current Uploads</h3>
+      <h3 className="text-lg font-medium mb-3">Current Uploads</h3>
+      <h3 className="text-base font-semibold mb-3">
+        Collection name: {collectionName}
+      </h3>
       <div className="space-y-3">
         {uploadedFiles.map((file) => (
           <div key={file.id} className="bg-gray-50 rounded-md p-3">

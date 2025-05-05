@@ -1,27 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { UploadedFile } from '@/lib/types';
+import { Collection, UploadedFile } from '@/lib/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { deleteFile, getFiles, uploadFiles } from '@/services/file-services';
 import { queryClient } from '@/lib/queryClient';
 import UploadSection from '@/components/knowledge-base/upload-section';
-import UploadList from '@/components/knowledge-base/upload-list';
 import RecentUploads from '@/components/knowledge-base/recent-uploads';
 import { toast } from 'sonner';
+import CollectionDialog from '@/components/knowledge-base/collection-dialog';
+import UploadList from '@/components/knowledge-base/upload-list';
 
 export default function KnowledgeBasePage() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [deletingFile, setDeletingFile] = useState('');
+  const [collectionName, setCollectionName] = useState('');
+  const [collectionNameError, setCollectionNameError] = useState('');
+  const [showCollectionDialog, setShowCollectionDialog] = useState(false);
+  const [recentUploads, setRecentUploads] = useState<Collection[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
 
   const { data, isLoading } = useQuery({
     queryKey: ['files'],
     queryFn: () => getFiles(),
+    select: (data: Collection[]) =>
+      data.map((item) => ({
+        ...item,
+        expand: true,
+      })),
   });
-
   const uploadFilesMutation = useMutation({
     mutationKey: ['upload-files'],
-    mutationFn: (formData: FormData) => uploadFiles(formData),
+    mutationFn: ({
+      formData,
+      collectionName,
+    }: {
+      formData: FormData;
+      collectionName: string;
+    }) => uploadFiles(formData, collectionName),
     onSuccess: async () => {
       toast.success('Files uploaded successfully', {
         description: 'Your documents have been added to the knowledge base.',
@@ -39,7 +55,13 @@ export default function KnowledgeBasePage() {
 
   const deleteFileMutation = useMutation({
     mutationKey: ['delete-a-file'],
-    mutationFn: (filename: string) => deleteFile(filename),
+    mutationFn: ({
+      filename,
+      collectionName,
+    }: {
+      filename: string;
+      collectionName: string;
+    }) => deleteFile(filename, collectionName),
     onSuccess: async () => {
       toast.success('File removed', {
         description:
@@ -74,18 +96,10 @@ export default function KnowledgeBasePage() {
     const pdfFiles = files.filter(
       (file) => file.type === 'application/pdf' && file.size <= 10 * 1024 * 1024
     );
-    const newFiles: UploadedFile[] = pdfFiles.map((file) => ({
-      id: Math.random().toString(36).substring(2, 9),
-      file: file,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      progress: 0,
-      status: 'uploading',
-    }));
-
-    newFiles.forEach((file) => simulateFileUpload(file.id));
-    setUploadedFiles((prev) => [...prev, ...newFiles]);
+    if (pdfFiles.length > 0) {
+      setPendingFiles(pdfFiles);
+      setShowCollectionDialog(true);
+    }
   };
 
   const simulateFileUpload = (fileId: string) => {
@@ -126,21 +140,69 @@ export default function KnowledgeBasePage() {
   const startUpload = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const formData = new FormData();
-    console.log(uploadedFiles);
     uploadedFiles.forEach((file) => formData.append('files', file.file));
-    await uploadFilesMutation.mutateAsync(formData);
+    await uploadFilesMutation.mutateAsync({ formData, collectionName });
+    setCollectionName('');
   };
 
   const removeFile = (fileId: string) =>
     setUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
-  const removeUploadedFile = async (filename: string) => {
-    setDeletingFile(filename);
-    await deleteFileMutation.mutateAsync(filename);
+
+  const removeUploadedFile = async (
+    filename: string,
+    collectionName: string
+  ) => {
+    setDeletingFile(filename + collectionName);
+    await deleteFileMutation.mutateAsync({ filename, collectionName });
+  };
+  const toggleCollectionExpanded = (collectionName: string) => {
+    setRecentUploads((prev) =>
+      prev.map((collection) =>
+        collection.collection === collectionName
+          ? { ...collection, expand: !collection.expand }
+          : collection
+      )
+    );
+  };
+  const handleCollectionSubmit = () => {
+    if (!collectionName.trim()) {
+      setCollectionNameError('Please enter a collection name');
+      return;
+    }
+    setUploadedFiles([]);
+    setCollectionNameError('');
+    const newFiles: UploadedFile[] = pendingFiles.map((file) => ({
+      id: Math.random().toString(36).substring(2, 9),
+      file: file,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      progress: 0,
+      status: 'uploading',
+    }));
+    setUploadedFiles((prev) => [...prev, ...newFiles]);
+    newFiles.forEach((file) => simulateFileUpload(file.id));
+    setShowCollectionDialog(false);
+    setPendingFiles([]);
   };
 
+  useEffect(() => {
+    if (!isLoading && data) setRecentUploads(data);
+  }, [isLoading, data]);
   return (
     <div className="flex-1 p-6 overflow-y-auto">
       <div className="max-w-4xl mx-auto">
+        <CollectionDialog
+          collectionName={collectionName}
+          collectionNameError={collectionNameError}
+          handleCollectionSubmit={handleCollectionSubmit}
+          setCollectionName={setCollectionName}
+          setCollectionNameError={setCollectionNameError}
+          setShowCollectionDialog={setShowCollectionDialog}
+          showCollectionDialog={showCollectionDialog}
+          setPendingFiles={setPendingFiles}
+          pendingFiles={pendingFiles}
+        />
         <UploadSection
           isDragging={isDragging}
           handleDragOver={handleDragOver}
@@ -153,13 +215,15 @@ export default function KnowledgeBasePage() {
           removeFile={removeFile}
           startUpload={startUpload}
           uploading={uploadFilesMutation.isPending}
+          collectionName={collectionName}
         />
         <RecentUploads
-          data={data?.files}
+          data={recentUploads}
           isLoading={isLoading}
           removeUploadedFile={removeUploadedFile}
           isDeleting={deleteFileMutation.isPending}
           deletingFile={deletingFile}
+          toggleCollectionExpanded={toggleCollectionExpanded}
         />
       </div>
     </div>

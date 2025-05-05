@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { publicRoutes } from './routes/config/publicRoutes';
 import PublicRouter from './routes/publicRouter';
 import ProtectedRouter from './routes/protectedRouter';
@@ -12,6 +12,11 @@ function App() {
     <Suspense fallback={null}>
       <BrowserRouter>
         <Routes>
+          <Route
+            path="/"
+            element={<Navigate to="/insurance-expert" replace />}
+          />
+
           <Route element={<PublicRouter />}>
             {publicRoutes.map((route) => (
               <Route

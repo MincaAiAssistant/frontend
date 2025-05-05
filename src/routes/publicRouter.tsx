@@ -12,7 +12,7 @@ export default function PublicRouter() {
       </div>
     );
   }
-  const navigateRouter = isAuthenticated ? '/' : '/auth';
+  const navigateRouter = isAuthenticated ? '/insurance-expert' : '/auth';
 
   return isAuthenticated ? <Navigate to={navigateRouter} /> : <Outlet />;
 }

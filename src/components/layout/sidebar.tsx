@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/auth-store';
-import { LogOut, Plus } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { MincaLogo } from '@/lib/minca-logo';
@@ -30,11 +30,18 @@ export default function Sidebar({
     navigate('/auth');
   };
 
-  const assistant = {
-    id: 'insurance-expert',
-    icon: '🧑‍💻',
-    name: 'Insurance Expert Assistant',
-  };
+  const assistants = [
+    {
+      id: 'insurance-expert',
+      icon: '🧑‍💻',
+      name: 'Policy Assistant',
+    },
+    {
+      id: 'sales-assistant',
+      icon: '👥',
+      name: 'Sales Assistant',
+    },
+  ];
 
   const displayedChats = recentChats?.slice(0, visibleChats);
   const canLoadMore = recentChats && visibleChats < recentChats.length;
@@ -52,30 +59,22 @@ export default function Sidebar({
           </h3>
 
           <nav className="space-y-1">
-            <button
-              onClick={() => navigate('/')}
-              className={cn(
-                'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left cursor-pointer',
-                location.pathname === '/' ||
-                  (location.pathname === '/' &&
-                    !location.pathname.includes('integration') &&
-                    !location.pathname.includes('knowledge-base'))
-                  ? 'bg-white/10 text-white font-medium'
-                  : 'text-white/80 hover:bg-white/10 hover:text-white'
-              )}
-            >
-              <span className="mr-3">{assistant.icon}</span>
-              <span>{assistant.name}</span>
-            </button>
+            {assistants.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => navigate(`${item.id}`)}
+                className={cn(
+                  'flex items-center px-4 py-2 text-sm rounded-lg w-full text-left cursor-pointer',
+                  location.pathname === `/${item.id}`
+                    ? 'bg-white/10 text-white font-medium'
+                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                )}
+              >
+                <span className="mr-3">{item.icon}</span>
+                <span>{item.name}</span>
+              </button>
+            ))}
           </nav>
-
-          <Button
-            className="mt-3 w-full bg-cyan-400 hover:bg-cyan-500 text-black"
-            onClick={() => navigate('/')}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            New Chat
-          </Button>
         </div>
 
         {recentChats && recentChats.length !== 0 && (
@@ -98,7 +97,9 @@ export default function Sidebar({
                     navigate(`/chat/${chat.chatid}`);
                   }}
                 >
-                  <span className="mr-3">{assistant.icon}</span>
+                  <span className="mr-3">
+                    {chat.type === 'policy' ? '🧑‍💻' : '👥'}
+                  </span>
                   <span className="truncate">
                     {chat.title.replace(/^"(.*)"$/, '$1')}
                   </span>

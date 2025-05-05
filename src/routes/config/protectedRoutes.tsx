@@ -7,11 +7,20 @@ import KnowledgeBasePage from '@/pages/knowledge-base-page';
 
 export const protectedRoutes: Route[] = [
   {
-    path: '/',
+    path: '/insurance-expert',
     component: <ChatPage />,
+    title: 'Policy Assistant',
     description:
-      'Expert in insurance policies, coverage options, and claims processing',
+      'Instant support for insurance policies, coverage options, and client comparisons',
     icon: '🧑‍💻',
+  },
+  {
+    path: '/sales-assistant',
+    component: <ChatPage />,
+    title: 'Sales Assistant',
+    description:
+      'Access client profiles, explore upselling opportunities, and check contract details',
+    icon: '👥',
   },
   {
     path: '/chat/:id',

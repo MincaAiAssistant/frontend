@@ -41,12 +41,14 @@ const MainLayout = () => {
       />
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         <Header
-          title={
-            currentChat?.title ??
-            currentRoute?.title ??
-            'Insurance Expert Assistant'
+          title={currentChat?.title ?? currentRoute?.title}
+          icon={
+            currentChat
+              ? currentChat?.type === 'policy'
+                ? '🧑‍💻'
+                : '👥'
+              : currentRoute?.icon
           }
-          icon={currentChat ? '🧑‍💻' : currentRoute?.icon}
           description={currentChat?.description ?? currentRoute?.description}
           backgroundColor="bg-orange-50"
         />

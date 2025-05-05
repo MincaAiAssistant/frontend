@@ -14,11 +14,12 @@ const getChat = async (id: string): Promise<{ chat: Chat }> => {
 };
 
 const initChat = async (
-  formData: FormData
+  formData: FormData,
+  type: 'policy' | 'sales'
 ): Promise<{ chat: Chat; user: Message; assistant: Message }> => {
   const response = await protectedAPIRequest(
     'POST',
-    `${BASE_URL}/chat/init`,
+    `${BASE_URL}/chat/init?type=${type}`,
     formData
   );
   return response.json();

@@ -57,7 +57,11 @@ export interface KnowledgeBase {
   size: number;
   lastModified: Date;
 }
-
+export interface Collection {
+  collection: string;
+  expand?: boolean;
+  files: KnowledgeBase[];
+}
 // Chat Types
 export interface Chat {
   chatid: string;
@@ -66,6 +70,7 @@ export interface Chat {
   created_at: Date;
   updated_at: Date;
   description?: string;
+  type: 'policy' | 'sales';
 }
 export interface Attachment {
   name: string;

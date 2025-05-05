@@ -1,6 +1,6 @@
 type HeaderProps = {
   icon?: React.ReactNode;
-  title: string;
+  title?: string;
   description?: string;
   backgroundColor?: string;
 };

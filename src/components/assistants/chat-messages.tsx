@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import FileCard from './file-card';
 import TypingIndicator from './typing-indicator';
+import { useLocation } from 'react-router-dom';
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -18,6 +19,7 @@ export function ChatMessages({
   streamingMessage,
   isProcessing,
 }: ChatMessagesProps) {
+  const location = useLocation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom whenever messages change or streaming occurs
@@ -50,14 +52,16 @@ export function ChatMessages({
   const displayMessages = streamingMessage
     ? [...messages, streamingMessage]
     : messages;
-
   if (displayMessages.length === 0) {
     // Welcome message when there are no messages
-    const welcomeMessage = 'How can I help you today?';
-
+    const welcomeMessage =
+      location.pathname === '/insurance-expert'
+        ? "I'm here to help you with policy details, coverage comparisons, and client support"
+        : 'How can I help you today?';
+    const icon = location.pathname === '/insurance-expert' ? '🧑‍💻' : '🤖';
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        <div className="text-4xl mb-4">🧑‍💻</div>
+        <div className="text-4xl mb-4">{icon}</div>
         <h3 className="text-xl font-medium text-gray-900 mb-2">
           {welcomeMessage}
         </h3>
@@ -95,7 +99,11 @@ export function ChatMessages({
                 <div className="flex items-center mb-2">
                   {message.role !== 'user' && (
                     <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 mr-2">
-                      <span>🧑‍💻</span>
+                      <span>
+                        {location.pathname === '/insurance-expert'
+                          ? '🧑‍💻'
+                          : '🤖'}
+                      </span>
                     </div>
                   )}
                   <div className="flex-1">

@@ -4,7 +4,12 @@ import { ChatInput } from '@/components/assistants/chat-input';
 import { Loader2 } from 'lucide-react';
 import { Chat, Message, Attachment } from '@/lib/types';
 import { toast } from 'sonner';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   addMessage,
@@ -19,6 +24,7 @@ type ContextType = {
 };
 
 export default function ChatPage() {
+  const location = useLocation();
   const { setCurrentChat } = useOutletContext<ContextType>();
   const { id } = useParams<{ id: string }>();
   const [inputMessage, setInputMessage] = useState('');
@@ -30,8 +36,11 @@ export default function ChatPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // Only fetch data if we have an ID
-  const { data: chatData, isLoading: isLoadingChat } = useQuery({
+  const {
+    data: chatData,
+    isLoading: isLoadingChat,
+    refetch,
+  } = useQuery({
     queryKey: ['chat', id],
     queryFn: () => getChat(id ?? ''),
     enabled: !!id,
@@ -44,7 +53,13 @@ export default function ChatPage() {
   });
 
   const initChatMutation = useMutation({
-    mutationFn: (formData: FormData) => initChat(formData),
+    mutationFn: ({
+      formData,
+      type,
+    }: {
+      formData: FormData;
+      type: 'policy' | 'sales';
+    }) => initChat(formData, type),
   });
   const addMessageMutation = useMutation({
     mutationFn: ({ formData, id }: { formData: FormData; id: string }) =>
@@ -72,6 +87,8 @@ export default function ChatPage() {
       setMessages([]);
       setCurrentChat(undefined);
       setIsProcessing(false);
+    } else {
+      refetch();
     }
   }, [id, setCurrentChat]);
 
@@ -124,7 +141,10 @@ export default function ChatPage() {
           id: chatData.chat.chatid,
         });
       } else {
-        aiResponse = await initChatMutation.mutateAsync(formData);
+        aiResponse = await initChatMutation.mutateAsync({
+          formData: formData,
+          type: location.pathname === '/insurance-expert' ? 'policy' : 'sales',
+        });
       }
 
       // Stream the assistant message

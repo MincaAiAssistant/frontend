@@ -4,6 +4,7 @@ import CrmIntegrationPage from '@/pages/crm-integration-page';
 import GeneralSettingsPage from '@/pages/general-settings-page';
 import GoogleIntegrationPage from '@/pages/google-integration-page';
 import KnowledgeBasePage from '@/pages/knowledge-base-page';
+import WhatsAppAssistantPage from '@/pages/whatsapp-assistant-page';
 
 export const protectedRoutes: Route[] = [
   {
@@ -56,5 +57,13 @@ export const protectedRoutes: Route[] = [
     title: 'General Settings',
     description: 'Customize your MincaAI experience',
     icon: '⚙️',
+  },
+  {
+    path: '/whatsapp-assistant',
+    component: <WhatsAppAssistantPage />,
+    title: 'Client Chat Assistant',
+    description:
+      'Quickly assist your clients 24/7 with AI. Step in personally whenever you want to offer a tailored experience.',
+    icon: '💬',
   },
 ];

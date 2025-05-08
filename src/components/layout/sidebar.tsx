@@ -119,7 +119,23 @@ export default function Sidebar({
             )}
           </div>
         )}
-
+        <div className="mb-4">
+          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+            Customer facing assistant
+          </h3>
+          <button
+            className={cn(
+              'flex items-center px-4 py-2 text-sm rounded-lg cursor-pointer w-full text-left',
+              location.pathname === '/whatsapp-assistant'
+                ? 'bg-white/10 text-white font-medium'
+                : 'text-white/80 hover:bg-white/10 hover:text-white'
+            )}
+            onClick={() => navigate('/whatsapp-assistant')}
+          >
+            <span className="mr-3">💬</span>
+            <span>Client Chat Assistant</span>
+          </button>
+        </div>
         <div>
           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
             Settings

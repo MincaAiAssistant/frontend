@@ -90,3 +90,19 @@ export interface Message {
   updated_at: Date;
   attachments?: Attachment[];
 }
+
+// Client Chat Assistant Types
+export interface ClientChat {
+  sessionId: string;
+  lastMessage: string;
+  lastTimestamp: Date;
+  totalMessages: number;
+}
+export interface ClientMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  files?: Attachment[];
+  time: Date;
+  sessionId: string;
+  content: string;
+}

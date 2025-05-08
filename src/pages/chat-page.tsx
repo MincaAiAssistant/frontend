@@ -36,11 +36,7 @@ export default function ChatPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const {
-    data: chatData,
-    isLoading: isLoadingChat,
-    refetch,
-  } = useQuery({
+  const { data: chatData, isLoading: isLoadingChat } = useQuery({
     queryKey: ['chat', id],
     queryFn: () => getChat(id ?? ''),
     enabled: !!id,
@@ -50,6 +46,8 @@ export default function ChatPage() {
     queryKey: ['messages', id],
     queryFn: () => getMessages(id ?? ''),
     enabled: !!id,
+    refetchOnMount: true,
+    staleTime: 0,
   });
 
   const initChatMutation = useMutation({
@@ -87,8 +85,6 @@ export default function ChatPage() {
       setMessages([]);
       setCurrentChat(undefined);
       setIsProcessing(false);
-    } else {
-      refetch();
     }
   }, [id, setCurrentChat]);
 

@@ -28,6 +28,8 @@ export default function KnowledgeBasePage() {
         ...item,
         expand: true,
       })),
+    refetchOnMount: true,
+    staleTime: 0,
   });
   const uploadFilesMutation = useMutation({
     mutationKey: ['upload-files'],
@@ -75,6 +77,7 @@ export default function KnowledgeBasePage() {
       });
     },
   });
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);

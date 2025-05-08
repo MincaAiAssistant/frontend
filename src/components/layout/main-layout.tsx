@@ -20,6 +20,8 @@ const MainLayout = () => {
     queryKey: ['chats'],
     queryFn: () => getChats(),
     enabled: !!user,
+    refetchOnMount: true,
+    staleTime: 0,
   });
   useEffect(() => {
     if (!location.pathname.includes('/chat')) setCurrentChat(undefined);
@@ -50,7 +52,17 @@ const MainLayout = () => {
               : currentRoute?.icon
           }
           description={currentChat?.description ?? currentRoute?.description}
-          backgroundColor="bg-orange-50"
+          backgroundColor={
+            currentRoute?.path === '/crm-integration'
+              ? 'bg-orange-100'
+              : currentRoute?.path === '/google-integration'
+              ? 'bg-blue-100'
+              : currentRoute?.path === '/general-settings'
+              ? 'bg-gray-100'
+              : currentRoute?.path === '/knowledge-base'
+              ? 'bg-cyan-100'
+              : ''
+          }
         />
         <Outlet context={{ currentChat, setCurrentChat }} />
       </main>

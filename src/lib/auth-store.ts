@@ -87,6 +87,7 @@ export const useAuthStore = create<AuthStore>()(
         set({
           user: null,
           isAuthenticated: false,
+          token: null,
         });
       },
     }),

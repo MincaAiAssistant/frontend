@@ -79,7 +79,7 @@ export default function RecentUploads({
               {/* Collection files */}
               {collection.expand && (
                 <div className="divide-y divide-gray-200">
-                  {collection.files.map((file) => (
+                  {collection?.files?.map((file) => (
                     <div
                       key={file.filename}
                       className="p-4 pl-6 hover:bg-gray-50"

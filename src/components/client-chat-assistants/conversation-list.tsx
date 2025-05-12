@@ -9,6 +9,7 @@ import {
 } from '../ui/select';
 import { ConversationItem } from './conversation-item';
 import { ClientChat } from '@/lib/types';
+import { differenceInMinutes } from 'date-fns';
 
 // Conversation List Component
 interface ConversationListProps {
@@ -38,7 +39,15 @@ export function ConversationList({
     const matchesSearch =
       customer.sessionId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.lastMessage?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
+
+    const isAIResponding =
+      differenceInMinutes(new Date(), new Date(customer.lastTimestamp)) < 3;
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'ai-responding' && isAIResponding) ||
+      (statusFilter === 'closed' && !isAIResponding);
+
+    return matchesSearch && matchesStatus;
   });
 
   return (
@@ -66,6 +75,7 @@ export function ConversationList({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All status</SelectItem>
+              <SelectItem value="ai-responding">AI responding</SelectItem>
               <SelectItem value="closed">Closed</SelectItem>
             </SelectContent>
           </Select>

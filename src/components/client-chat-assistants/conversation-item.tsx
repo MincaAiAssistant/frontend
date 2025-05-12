@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
-import { formatDistanceToNow } from 'date-fns';
+import { differenceInMinutes, formatDistanceToNow } from 'date-fns';
 import { ClientChat } from '@/lib/types';
 
 // Conversation Item Component
@@ -35,12 +35,20 @@ export function ConversationItem({
         {customer.totalMessages}
       </div>
       <div className="col-span-2">
-        <Badge
-          variant="outline"
-          className="text-xs bg-gray-50 text-gray-700 border-gray-200"
-        >
-          Closed
-        </Badge>
+        {differenceInMinutes(new Date(), new Date(customer.lastTimestamp)) <
+        3 ? (
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <span className="text-xs text-gray-600">AI responding</span>
+          </div>
+        ) : (
+          <Badge
+            variant="outline"
+            className="text-xs bg-gray-50 text-gray-700 border-gray-200"
+          >
+            Closed
+          </Badge>
+        )}
       </div>
       <div className="col-span-2 text-xs text-gray-500">
         {formatDistanceToNow(new Date(customer.lastTimestamp), {

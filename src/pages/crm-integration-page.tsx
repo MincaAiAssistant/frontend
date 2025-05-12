@@ -4,13 +4,22 @@ import {
   hubspotAuthorize,
   hubspotCallback,
 } from '@/services/hubspot-services';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function CrmIntegrationPage() {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data, isLoading, refetch, isError } = useQuery({
+    queryKey: ['hubspot-access-token'],
+    queryFn: () => getHubspotAccessToken(),
+    staleTime: 0,
+    refetchOnMount: true,
+    gcTime: 0,
+  });
 
   const callbackMutation = useMutation({
     mutationKey: ['hubspot-callback'],
@@ -19,12 +28,6 @@ export default function CrmIntegrationPage() {
   const authorizeMutation = useMutation({
     mutationKey: ['hubspot-authorize'],
     mutationFn: () => hubspotAuthorize(),
-  });
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ['hubspot-access-token'],
-    queryFn: () => getHubspotAccessToken(),
-    refetchOnMount: true,
-    staleTime: 0,
   });
 
   const handleConnectClick = async () => {
@@ -69,9 +72,12 @@ export default function CrmIntegrationPage() {
   };
 
   useEffect(() => {
+    if (isError) {
+      queryClient.setQueryData(['hubspot-access-token'], null);
+    }
     if (data) setIsConnected(true);
     else setIsConnected(false);
-  }, [data]);
+  }, [isLoading, data, isError]);
   return (
     <div className="flex-1 p-6 overflow-y-auto">
       <div className="max-w-4xl mx-auto">

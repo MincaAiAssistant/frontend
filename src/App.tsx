@@ -6,6 +6,8 @@ import ProtectedRouter from './routes/protectedRouter';
 import MainLayout from './components/layout/main-layout';
 import { protectedRoutes } from './routes/config/protectedRoutes';
 import NotFound from './pages/not-found';
+import ExternalRouter from './routes/externalRouter';
+import { externalRoutes } from './routes/config/externalRoutes';
 
 function App() {
   return (
@@ -16,7 +18,15 @@ function App() {
             path="/"
             element={<Navigate to="/insurance-expert" replace />}
           />
-
+          <Route element={<ExternalRouter />}>
+            {externalRoutes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.component}
+              />
+            ))}
+          </Route>
           <Route element={<PublicRouter />}>
             {publicRoutes.map((route) => (
               <Route

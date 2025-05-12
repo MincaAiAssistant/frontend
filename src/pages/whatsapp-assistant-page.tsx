@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  getClientChatMesages,
+  getClientChatMessages,
   getClientChats,
 } from '@/services/client-assistant-services';
 
@@ -34,7 +34,7 @@ export default function WhatsAppAssistantPage() {
     queryKey: [activeCustomer?.sessionId],
     queryFn: ({ queryKey }) => {
       const [sessionId] = queryKey;
-      return getClientChatMesages(sessionId ?? '');
+      return getClientChatMessages(sessionId ?? '');
     },
     enabled: !!activeCustomer,
   });

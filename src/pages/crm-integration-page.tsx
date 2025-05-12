@@ -70,6 +70,7 @@ export default function CrmIntegrationPage() {
 
   useEffect(() => {
     if (data?.hubspot_access_token) setIsConnected(true);
+    else setIsConnected(false);
   }, [data]);
   return (
     <div className="flex-1 p-6 overflow-y-auto">

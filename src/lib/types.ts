@@ -99,10 +99,25 @@ export interface ClientChat {
   totalMessages: number;
 }
 export interface ClientMessage {
-  id: string;
+  messageid: string;
   role: 'user' | 'assistant';
   files?: Attachment[];
-  time: Date;
+  created_at: Date;
   sessionId: string;
   content: string;
+}
+
+export interface CustomerChat {
+  sessionid: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface CustomerMessage {
+  messageid: string;
+  sessionid: string;
+  role: 'user' | 'assistant';
+  content: string;
+  created_at: Date;
+  attachments?: Attachment[];
 }

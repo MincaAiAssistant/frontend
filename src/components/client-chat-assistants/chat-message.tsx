@@ -36,7 +36,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
               {message.role === 'user' ? 'Client' : 'You (AI Assistant)'}
             </p>
             <p className="text-xs opacity-70">
-              {formatTimestamp(message.time)}
+              {formatTimestamp(message.created_at)}
             </p>
           </div>
         </div>

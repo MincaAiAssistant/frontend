@@ -69,6 +69,10 @@ export default function CrmIntegrationPage() {
   };
 
   useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
     if (data?.hubspot_access_token) setIsConnected(true);
     else setIsConnected(false);
   }, [data]);

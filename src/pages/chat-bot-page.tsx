@@ -181,6 +181,23 @@ const ChatBot = () => {
       setIsProcessing(false);
     }
   };
+
+  const handleRefresh = () => {
+    localStorage.removeItem('customer-chat-sessionid');
+    setMessages([
+      {
+        messageid: `temp-${Date.now()}`,
+        sessionId: 'sessionId',
+        created_at: new Date(),
+        role: 'assistant',
+        content: 'Hi there! How can I help?',
+      },
+    ]);
+    setIsProcessing(false);
+    setInputMessage('');
+    navigate(`/chat-bot`);
+  };
+
   useEffect(() => {
     if (!id) {
       const savedSessionId = localStorage.getItem('customer-chat-sessionid');
@@ -196,7 +213,7 @@ const ChatBot = () => {
     <main className="flex-1 flex flex-col h-screen overflow-hidden">
       <div className={`bg-blue-500 flex justify-end h-[50px]`}>
         <button className="cursor-pointer py-2 px-4 justify-center font-semibold text-white focus:outline-none flex items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:brightness-100 transition-all filter hover:brightness-90 active:brightness-75 chatbot-button my-2 ml-2">
-          <RefreshCcw width={22} height={22} />
+          <RefreshCcw onClick={handleRefresh} width={22} height={22} />
         </button>
       </div>
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
